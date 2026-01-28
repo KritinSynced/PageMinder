@@ -1,5 +1,21 @@
-let books = JSON.parse(localStorage.getItem("books")) || [];
+// Default books (only used first time)
+const defaultBooks = [
+  { title: "Atomic Habits", author: "James Clear", status: "Available" },
+  { title: "The Alchemist", author: "Paulo Coelho", status: "Available" },
+  { title: "Rich Dad Poor Dad", author: "Robert Kiyosaki", status: "Available" },
+  { title: "Think and Grow Rich", author: "Napoleon Hill", status: "Available" },
+  { title: "Harry Potter", author: "J.K. Rowling", status: "Available" }
+];
 
+// Load books from localStorage OR use defaults
+let books = JSON.parse(localStorage.getItem("books"));
+
+if (!books || books.length === 0) {
+  books = defaultBooks;
+  localStorage.setItem("books", JSON.stringify(books));
+}
+
+// Display Books
 function displayBooks() {
   let table = document.getElementById("bookList");
   table.innerHTML = "";
@@ -26,6 +42,7 @@ function displayBooks() {
   });
 }
 
+// Add Book
 function addBook() {
   let title = document.getElementById("title").value;
   let author = document.getElementById("author").value;
@@ -44,12 +61,14 @@ function addBook() {
   displayBooks();
 }
 
+// Delete Book
 function deleteBook(index) {
   books.splice(index, 1);
   localStorage.setItem("books", JSON.stringify(books));
   displayBooks();
 }
 
+// Issue / Return Book
 function toggleStatus(index) {
   books[index].status =
     books[index].status === "Available" ? "Issued" : "Available";
@@ -58,4 +77,5 @@ function toggleStatus(index) {
   displayBooks();
 }
 
+// Initial Display
 displayBooks();
