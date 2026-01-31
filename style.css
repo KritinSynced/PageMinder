@@ -1,210 +1,172 @@
-/* style.css */
-
-/* Import a modern font from Google Fonts for better readability */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
-/* Reset and base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-body {
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #333;
-  line-height: 1.6;
-  min-height: 100vh;
-  padding: 20px;
+body{
+  min-height:100vh;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #fff;
-  font-weight: 700;
-  font-size: 2.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+.app{
+  width:95%;
+  max-width:1100px;
+  text-align:center;
 }
 
-h2 {
-  text-align: center;
-  margin: 30px 0 20px;
-  color: #4a4a4a;
-  font-weight: 600;
-  font-size: 1.8rem;
+h1{
+  font-size:3rem;
+  letter-spacing:1px;
 }
 
-.container {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  max-width: 900px;
-  width: 100%;
-  margin: 0 auto 30px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  align-items: center;
-  justify-content: center;
+.subtitle{
+  opacity:0.9;
+  margin-bottom:30px;
 }
 
-input[type="text"] {
-  padding: 12px 15px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  flex: 1;
-  min-width: 200px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+/* Add Book Card */
+.add-card{
+  background:rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  padding:25px;
+  border-radius:16px;
+  display:flex;
+  gap:15px;
+  justify-content:center;
+  flex-wrap:wrap;
+  box-shadow:0 10px 40px rgba(0,0,0,0.2);
+  animation: slideDown 1s ease;
 }
 
-input[type="text"]:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
-  outline: none;
+input{
+  padding:12px;
+  width:220px;
+  border:none;
+  border-radius:8px;
+  outline:none;
+  font-size:1rem;
 }
 
-button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+button{
+  padding:12px 22px;
+  background:#00e676;
+  border:none;
+  border-radius:8px;
+  font-size:1rem;
+  cursor:pointer;
+  transition:0.3s;
+  color:black;
 }
 
-button:hover {
-  transform: translateY(-2px);
+button:hover{
+  transform:scale(1.08);
+  background:#1de9b6;
 }
 
-.container button {
-  background-color: #28a745;
-  color: #fff;
+/* Book Grid */
+.grid{
+  margin-top:40px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
 }
 
-.container button:hover {
-  background-color: #218838;
+/* Book Card */
+.book-card{
+  background:rgba(255,255,255,0.18);
+  backdrop-filter: blur(12px);
+  padding:22px;
+  border-radius:16px;
+  text-align:left;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  animation: fadeUp 0.6s ease;
+  position:relative;
+  overflow:hidden;
 }
 
-/* Table styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0 auto;
-  font-size: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
+.book-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,0.3),transparent);
+  transform:translateX(-100%);
+  transition:0.6s;
 }
 
-th, td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.book-card:hover::before{
+  transform:translateX(100%);
 }
 
-th {
-  background-color: #f8f9fa;
-  font-weight: 700;
-  color: #495057;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.book-title{
+  font-size:1.3rem;
+  font-weight:600;
 }
 
-tr:hover {
-  background-color: #f1f3f4;
+.book-author{
+  opacity:0.85;
+  margin-bottom:12px;
 }
 
-.status-available {
-  color: #28a745;
-  font-weight: 500;
+/* Status */
+.status{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:0.8rem;
+  margin-bottom:15px;
 }
 
-.status-issued {
-  color: #dc3545;
-  font-weight: 500;
+.available{
+  background:#00e676;
+  color:black;
 }
 
-/* Action buttons in table */
-td button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  margin-right: 5px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+.issued{
+  background:#ff5252;
 }
 
-td button:hover {
-  transform: translateY(-1px);
+/* Buttons Row */
+.actions{
+  display:flex;
+  gap:10px;
 }
 
-/* Specific button styles based on text (since no classes in JS) */
-td button:nth-child(1) {
-  background-color: #007bff;
-  color: #fff;
+.issue-btn{
+  background:#4fc3f7;
 }
 
-td button:nth-child(1):hover {
-  background-color: #0056b3;
+.delete-btn{
+  background:#ff5252;
+  color:white;
 }
 
-td button:nth-child(2) {
-  background-color: #dc3545;
-  color: #fff;
+.issue-btn:hover{
+  background:#81d4fa;
 }
 
-td button:nth-child(2):hover {
-  background-color: #c82333;
+.delete-btn:hover{
+  background:#ff1744;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  body {
-    padding: 10px;
-  }
+/* Animations */
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
 
-  h1 {
-    font-size: 2rem;
-  }
+@keyframes slideDown{
+  from{opacity:0; transform:translateY(-30px);}
+  to{opacity:1; transform:translateY(0);}
+}
 
-  h2 {
-    font-size: 1.5rem;
-  }
-
-  .container {
-    padding: 20px;
-    flex-direction: column;
-  }
-
-  input[type="text"] {
-    min-width: auto;
-    width: 100%;
-  }
-
-  button {
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  table {
-    font-size: 0.9rem;
-  }
-
-  th, td {
-    padding: 10px;
-  }
-
-  td button {
-    padding: 6px 10px;
-    font-size: 0.8rem;
-    margin-right: 3px;
-  }
+/* Mobile */
+@media(max-width:600px){
+  input{width:100%;}
+  .add-card{flex-direction:column;}
 }
