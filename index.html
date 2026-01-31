@@ -14,11 +14,16 @@
   <h1>📚 My Library</h1>
   <p class="subtitle">Smart Book Management System</p>
 
-  <!-- Add Book Card -->
+  <!-- Add Book -->
   <div class="card add-card">
     <input type="text" id="title" placeholder="Book Title">
     <input type="text" id="author" placeholder="Author Name">
     <button onclick="addBook()">➕ Add Book</button>
+  </div>
+
+  <!-- Search -->
+  <div class="card add-card">
+    <input type="text" id="searchBox" placeholder="🔍 Search book or author..." onkeyup="searchBooks()">
   </div>
 
   <!-- Books -->
