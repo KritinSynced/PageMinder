@@ -170,3 +170,7 @@ button:hover{
   input{width:100%;}
   .add-card{flex-direction:column;}
 }
+
+#searchBox{
+  max-width:500px;
+}
