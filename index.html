@@ -1,31 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Library Management</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Library Manager</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-<h1>📚 Library Management System</h1>
+<div class="app">
 
-<div class="container">
-  <input type="text" id="title" placeholder="Book Title">
-  <input type="text" id="author" placeholder="Author Name">
-  <button onclick="addBook()">Add Book</button>
+  <h1>📚 My Library</h1>
+  <p class="subtitle">Smart Book Management System</p>
+
+  <!-- Add Book Card -->
+  <div class="card add-card">
+    <input type="text" id="title" placeholder="Book Title">
+    <input type="text" id="author" placeholder="Author Name">
+    <button onclick="addBook()">➕ Add Book</button>
+  </div>
+
+  <!-- Books -->
+  <div id="bookList" class="grid"></div>
+
 </div>
-
-<h2>Book List</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="bookList"></tbody>
-</table>
 
 <script src="script.js"></script>
 </body>
