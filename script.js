@@ -1,81 +1,77 @@
-// Default books (only used first time)
 const defaultBooks = [
   { title: "Atomic Habits", author: "James Clear", status: "Available" },
   { title: "The Alchemist", author: "Paulo Coelho", status: "Available" },
-  { title: "Rich Dad Poor Dad", author: "Robert Kiyosaki", status: "Available" },
-  { title: "Think and Grow Rich", author: "Napoleon Hill", status: "Available" },
-  { title: "Harry Potter", author: "J.K. Rowling", status: "Available" }
+  { title: "Rich Dad Poor Dad", author: "Robert Kiyosaki", status: "Available" }
 ];
 
-// Load books from localStorage OR use defaults
 let books = JSON.parse(localStorage.getItem("books"));
 
-if (!books || books.length === 0) {
+if(!books || books.length===0){
   books = defaultBooks;
-  localStorage.setItem("books", JSON.stringify(books));
+  localStorage.setItem("books",JSON.stringify(books));
 }
 
-// Display Books
-function displayBooks() {
-  let table = document.getElementById("bookList");
-  table.innerHTML = "";
+function displayBooks(){
+  const container = document.getElementById("bookList");
+  container.innerHTML="";
 
-  books.forEach((book, index) => {
-    let row = table.insertRow();
+  books.forEach((book,index)=>{
 
-    row.insertCell(0).innerText = book.title;
-    row.insertCell(1).innerText = book.author;
-    row.insertCell(2).innerText = book.status;
+    const card = document.createElement("div");
+    card.className="book-card";
 
-    let actionCell = row.insertCell(3);
+    card.innerHTML=`
+      <div class="book-title">${book.title}</div>
+      <div class="book-author">by ${book.author}</div>
 
-    let issueBtn = document.createElement("button");
-    issueBtn.innerText = book.status === "Available" ? "Issue" : "Return";
-    issueBtn.onclick = () => toggleStatus(index);
+      <div class="status ${book.status==="Available"?"available":"issued"}">
+        ${book.status}
+      </div>
 
-    let deleteBtn = document.createElement("button");
-    deleteBtn.innerText = "Delete";
-    deleteBtn.onclick = () => deleteBook(index);
+      <div class="actions">
+        <button class="issue-btn" onclick="toggleStatus(${index})">
+          ${book.status==="Available"?"Issue":"Return"}
+        </button>
+        <button class="delete-btn" onclick="deleteBook(${index})">
+          Delete
+        </button>
+      </div>
+    `;
 
-    actionCell.appendChild(issueBtn);
-    actionCell.appendChild(deleteBtn);
+    container.appendChild(card);
   });
 }
 
-// Add Book
-function addBook() {
-  let title = document.getElementById("title").value;
-  let author = document.getElementById("author").value;
+function addBook(){
+  const title=document.getElementById("title").value.trim();
+  const author=document.getElementById("author").value.trim();
 
-  if (title === "" || author === "") {
-    alert("Please enter all fields");
+  if(title===""||author===""){
+    alert("Fill all fields");
     return;
   }
 
-  books.push({ title, author, status: "Available" });
-  localStorage.setItem("books", JSON.stringify(books));
+  books.push({title,author,status:"Available"});
+  localStorage.setItem("books",JSON.stringify(books));
 
-  document.getElementById("title").value = "";
-  document.getElementById("author").value = "";
+  document.getElementById("title").value="";
+  document.getElementById("author").value="";
 
   displayBooks();
 }
 
-// Delete Book
-function deleteBook(index) {
-  books.splice(index, 1);
-  localStorage.setItem("books", JSON.stringify(books));
+function deleteBook(index){
+  books.splice(index,1);
+  localStorage.setItem("books",JSON.stringify(books));
   displayBooks();
 }
 
-// Issue / Return Book
-function toggleStatus(index) {
+function toggleStatus(index){
   books[index].status =
-    books[index].status === "Available" ? "Issued" : "Available";
+    books[index].status==="Available"?"Issued":"Available";
 
-  localStorage.setItem("books", JSON.stringify(books));
+  localStorage.setItem("books",JSON.stringify(books));
   displayBooks();
 }
 
-// Initial Display
 displayBooks();
