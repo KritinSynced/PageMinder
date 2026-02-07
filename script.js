@@ -108,14 +108,44 @@ if (!books || books.length === 0) {
   localStorage.setItem("books", JSON.stringify(books));
 }
 
+// Debounce utility for search
+let searchTimeout;
+function debounceSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    displayBooks();
+  }, 300); // 300ms delay
+}
+
+// Get filtered books (combines category and search filters)
+function getFilteredBooks() {
+  const selectedCategories = Array.from(document.querySelectorAll('.category-filters input:checked')).map(cb => cb.value);
+  const query = document.getElementById("searchBox").value.toLowerCase().trim();
+
+  return books.filter(book => {
+    const matchesCategory = selectedCategories.includes(book.category);
+    const matchesSearch = !query || 
+      book.title.toLowerCase().includes(query) || 
+      book.author.toLowerCase().includes(query) || 
+      book.category.toLowerCase().includes(query);
+    return matchesCategory && matchesSearch;
+  });
+}
+
 // Display Books (Grouped by Category)
-function displayBooks(list = books) {
+function displayBooks() {
+  const filteredBooks = getFilteredBooks();
   const container = document.getElementById("bookList");
   container.innerHTML = "";
 
-  const categories = [...new Set(list.map(book => book.category))];
+  if (filteredBooks.length === 0) {
+    container.innerHTML = "<p style='text-align: center; color: #777; font-size: 1.1rem;'>No books found matching your filters.</p>";
+    return;
+  }
+
+  const categories = [...new Set(filteredBooks.map(book => book.category))];
   categories.forEach(cat => {
-    const categoryBooks = list.filter(book => book.category === cat);
+    const categoryBooks = filteredBooks.filter(book => book.category === cat);
     if (categoryBooks.length > 0) {
       const section = document.createElement("div");
       section.className = "category-section";
@@ -123,7 +153,7 @@ function displayBooks(list = books) {
       const grid = document.createElement("div");
       grid.className = "category-grid";
 
-      categoryBooks.forEach((book, index) => {
+      categoryBooks.forEach((book) => {
         const card = document.createElement("div");
         card.className = "book-card animate-in";
         card.innerHTML = `
@@ -144,3 +174,62 @@ function displayBooks(list = books) {
 }
 
 // Add Book
+function addBook() {
+  const title = document.getElementById("title").value.trim();
+  const author = document.getElementById("author").value.trim();
+  const category = document.getElementById("category").value;
+
+  if (title === "" || author === "") {
+    alert("Please fill in both title and author.");
+    return;
+  }
+
+  books.push({ title, author, category, status: "Available" });
+  localStorage.setItem("books", JSON.stringify(books));
+
+  document.getElementById("title").value = "";
+  document.getElementById("author").value = "";
+  displayBooks();
+}
+
+// Delete Book
+function deleteBook(index) {
+  books.splice(index, 1);
+  localStorage.setItem("books", JSON.stringify(books));
+  displayBooks();
+}
+
+// Toggle Status
+function toggleStatus(index) {
+  books[index].status = books[index].status === "Available" ? "Issued" : "Available";
+  localStorage.setItem("books", JSON.stringify(books));
+  displayBooks();
+}
+
+// Search Books (with debouncing)
+function searchBooks() {
+  debounceSearch();
+}
+
+// Clear Search
+function clearSearch() {
+  document.getElementById("searchBox").value = "";
+  displayBooks();
+}
+
+// Filter by Category
+function filterByCategory() {
+  displayBooks();
+}
+
+// Reset to Defaults
+function resetToDefaults() {
+  if (confirm("This will reset all books to the default list. Continue?")) {
+    books = [...defaultBooks];
+    localStorage.setItem("books", JSON.stringify(books));
+    displayBooks();
+  }
+}
+
+// Initial Load
+displayBooks();
