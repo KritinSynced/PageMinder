@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BookShelf - Smart Library Manager</title>
+  <title>PageMinder - Smart Library Manager</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,19 +15,34 @@
       <div class="header-content">
         <div class="logo-section">
           <div class="logo">
-            <i class="fas fa-book-open"></i>
-            <h1>BookShelf</h1>
+            <i class="fas fa-bookmark"></i>
+            <div>
+              <h1>PageMinder</h1>
+              <p class="tagline">Your Personal Digital Library Manager</p>
+            </div>
           </div>
-          <p class="tagline">Your Personal Digital Library</p>
         </div>
         <div class="stats">
           <div class="stat-item">
-            <span class="stat-count" id="totalBooks">0</span>
-            <span class="stat-label">Total Books</span>
+            <i class="fas fa-book"></i>
+            <div>
+              <span class="stat-count" id="totalBooks">50</span>
+              <span class="stat-label">Total Books</span>
+            </div>
           </div>
           <div class="stat-item">
-            <span class="stat-count" id="availableBooks">0</span>
-            <span class="stat-label">Available</span>
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <span class="stat-count" id="availableBooks">50</span>
+              <span class="stat-label">Available</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-users"></i>
+            <div>
+              <span class="stat-count" id="issuedBooks">0</span>
+              <span class="stat-label">Issued</span>
+            </div>
           </div>
         </div>
       </div>
@@ -37,7 +52,7 @@
       <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-section">
-          <h3><i class="fas fa-filter"></i> Filters</h3>
+          <h3><i class="fas fa-filter"></i> Filter Books</h3>
           <div class="filters-container">
             <div class="filter-group">
               <h4>Categories</h4>
@@ -47,28 +62,42 @@
             </div>
             
             <div class="filter-group">
-              <h4>Status</h4>
+              <h4>Book Status</h4>
               <div class="status-filters">
                 <label class="filter-chip active" data-status="all">
-                  <input type="radio" name="status" value="all" checked> All
+                  <input type="radio" name="status" value="all" checked> All Books
                 </label>
                 <label class="filter-chip" data-status="Available">
-                  <input type="radio" name="status" value="Available"> Available
+                  <input type="radio" name="status" value="Available"> Available Now
                 </label>
                 <label class="filter-chip" data-status="Issued">
-                  <input type="radio" name="status" value="Issued"> Issued
+                  <input type="radio" name="status" value="Issued"> Currently Issued
                 </label>
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <h4>Sort By</h4>
+              <div class="sort-filters">
+                <select id="sortOptions" onchange="sortBooks()" class="sort-select">
+                  <option value="title-asc">Title (A-Z)</option>
+                  <option value="title-desc">Title (Z-A)</option>
+                  <option value="author-asc">Author (A-Z)</option>
+                  <option value="author-desc">Author (Z-A)</option>
+                  <option value="category-asc">Category (A-Z)</option>
+                  <option value="added-desc">Recently Added</option>
+                </select>
               </div>
             </div>
           </div>
           
           <button class="reset-btn" onclick="resetFilters()">
-            <i class="fas fa-redo"></i> Reset Filters
+            <i class="fas fa-redo"></i> Reset All Filters
           </button>
         </div>
         
         <div class="sidebar-section">
-          <h3><i class="fas fa-chart-bar"></i> Quick Stats</h3>
+          <h3><i class="fas fa-chart-pie"></i> Library Stats</h3>
           <div class="stats-summary" id="categoryStats">
             <!-- Category stats will be populated here -->
           </div>
@@ -84,7 +113,7 @@
               <i class="fas fa-search"></i>
               <input type="text" 
                      id="searchBox" 
-                     placeholder="Search books, authors, or categories..."
+                     placeholder="Search books by title, author, or category..."
                      onkeyup="debounceSearch()"
                      aria-label="Search books">
               <button class="clear-search" onclick="clearSearch()" title="Clear search">
@@ -92,13 +121,16 @@
               </button>
             </div>
             <div class="search-hints">
-              <small>Try: "fiction" or "Stephen King" or "self-help"</small>
+              <small>Tip: Try searching for "fiction", "Stephen King", or "self-help"</small>
             </div>
           </div>
           
           <div class="action-buttons">
             <button class="btn-primary" onclick="showAddBookModal()">
-              <i class="fas fa-plus"></i> Add New Book
+              <i class="fas fa-plus-circle"></i> Add New Book
+            </button>
+            <button class="btn-secondary" onclick="exportLibrary()">
+              <i class="fas fa-download"></i> Export
             </button>
           </div>
         </div>
@@ -106,15 +138,15 @@
         <!-- Books Grid -->
         <div class="books-container">
           <div class="books-header">
-            <h2 id="booksTitle">All Books</h2>
+            <h2 id="booksTitle">All Books in Library</h2>
             <div class="view-controls">
-              <span class="results-count" id="resultsCount">0 books</span>
+              <span class="results-count" id="resultsCount">50 books</span>
               <div class="view-toggle">
                 <button class="view-btn active" data-view="grid" title="Grid view">
-                  <i class="fas fa-th"></i>
+                  <i class="fas fa-th-large"></i>
                 </button>
                 <button class="view-btn" data-view="list" title="List view">
-                  <i class="fas fa-list"></i>
+                  <i class="fas fa-list-ul"></i>
                 </button>
               </div>
             </div>
@@ -125,9 +157,25 @@
           </div>
           
           <div id="emptyState" class="empty-state">
-            <i class="fas fa-book"></i>
+            <i class="fas fa-book-open"></i>
             <h3>No books found</h3>
-            <p>Try adjusting your filters or add a new book to get started.</p>
+            <p>Try adjusting your filters or add a new book to your library.</p>
+            <button class="btn-primary" onclick="showAddBookModal()">
+              <i class="fas fa-plus"></i> Add Your First Book
+            </button>
+          </div>
+          
+          <!-- Quick Actions Bar -->
+          <div class="quick-actions">
+            <button class="quick-btn" onclick="showAddBookModal()">
+              <i class="fas fa-plus"></i> Quick Add
+            </button>
+            <button class="quick-btn" onclick="showBulkIssueModal()">
+              <i class="fas fa-book-reader"></i> Bulk Issue
+            </button>
+            <button class="quick-btn" onclick="showReadingStats()">
+              <i class="fas fa-chart-line"></i> Reading Stats
+            </button>
           </div>
         </div>
       </main>
@@ -142,30 +190,44 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="title">Book Title *</label>
-            <input type="text" id="title" placeholder="Enter book title">
+            <label for="title">
+              <i class="fas fa-heading"></i> Book Title *
+            </label>
+            <input type="text" id="title" placeholder="Enter book title" required>
           </div>
           <div class="form-group">
-            <label for="author">Author *</label>
-            <input type="text" id="author" placeholder="Enter author name">
+            <label for="author">
+              <i class="fas fa-user-edit"></i> Author *
+            </label>
+            <input type="text" id="author" placeholder="Enter author name" required>
           </div>
           <div class="form-group">
-            <label for="category">Category</label>
+            <label for="category">
+              <i class="fas fa-tags"></i> Category
+            </label>
             <select id="category">
-              <option value="Self-Help">Self-Help</option>
               <option value="Fiction">Fiction</option>
+              <option value="Non-Fiction">Non-Fiction</option>
+              <option value="Self-Help">Self-Help</option>
               <option value="Science">Science</option>
-              <option value="Math">Math</option>
-              <option value="Languages">Languages</option>
-              <option value="Journals">Journals</option>
+              <option value="Technology">Technology</option>
               <option value="Biography">Biography</option>
+              <option value="History">History</option>
               <option value="Business">Business</option>
+              <option value="Health">Health</option>
+              <option value="Travel">Travel</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label for="isbn">
+              <i class="fas fa-barcode"></i> ISBN (Optional)
+            </label>
+            <input type="text" id="isbn" placeholder="Enter ISBN number">
           </div>
           <div class="form-group">
             <label>Initial Status</label>
             <div class="status-options">
-              <label class="status-option">
+              <label class="status-option active">
                 <input type="radio" name="status" value="Available" checked>
                 <span class="status-indicator available"></span>
                 Available
@@ -179,16 +241,109 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-secondary" onclick="closeAddBookModal()">Cancel</button>
-          <button class="btn-primary" onclick="addBook()">Add to Library</button>
+          <button class="btn-secondary" onclick="closeAddBookModal()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button class="btn-primary" onclick="addBook()">
+            <i class="fas fa-save"></i> Add to Library
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Issue Modal -->
+    <div id="bulkIssueModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-book-reader"></i> Bulk Issue Books</h3>
+          <button class="close-modal" onclick="closeBulkIssueModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Select books to issue in bulk:</p>
+          <div id="bulkIssueList" class="bulk-list">
+            <!-- Available books will be listed here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="closeBulkIssueModal()">Cancel</button>
+          <button class="btn-primary" onclick="issueSelectedBooks()">Issue Selected Books</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reading Stats Modal -->
+    <div id="statsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-chart-line"></i> Reading Statistics</h3>
+          <button class="close-modal" onclick="closeStatsModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-book-open"></i>
+              </div>
+              <div class="stat-info">
+                <h4>Total Reading Time</h4>
+                <p class="stat-number">45 hours</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <div class="stat-info">
+                <h4>Books Completed</h4>
+                <p class="stat-number">12</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div class="stat-info">
+                <h4>This Month</h4>
+                <p class="stat-number">3 books</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-info">
+                <h4>Average Time/Book</h4>
+                <p class="stat-number">3.75 hours</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
     <footer class="app-footer">
-      <p>BookShelf Manager &copy; 2024 | <span id="currentYear"></span></p>
-      <p class="footer-note">Track, organize, and manage your personal library</p>
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4><i class="fas fa-bookmark"></i> PageMinder</h4>
+          <p>Your intelligent library management system</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <a href="#" onclick="resetFilters()">Reset Library</a>
+          <a href="#" onclick="showAddBookModal()">Add Book</a>
+          <a href="#" onclick="exportLibrary()">Export Data</a>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p>support@pageminder.com</p>
+          <p>+1 (555) 123-4567</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="currentYear"></span> PageMinder Library Manager. All rights reserved.</p>
+        <p class="footer-note">Track, organize, and manage your personal library efficiently</p>
+      </div>
     </footer>
   </div>
 
