@@ -2,60 +2,194 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Added for mobile responsiveness -->
-  <title>Library Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookShelf - Smart Library Manager</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="app">
-    <h1>📚 My Library</h1>
-    <p class="subtitle">Smart Book Management System</p>
-
-    <!-- Sidebar for Category Filters -->
-    <div class="sidebar">
-      <h3>Filter by Category</h3>
-      <div class="category-filters">
-        <label><input type="checkbox" value="Self-Help" checked onchange="filterByCategory()"> Self-Help</label>
-        <label><input type="checkbox" value="Fiction" checked onchange="filterByCategory()"> Fiction</label>
-        <label><input type="checkbox" value="Science" checked onchange="filterByCategory()"> Science</label>
-        <label><input type="checkbox" value="Math" checked onchange="filterByCategory()"> Math</label>
-        <label><input type="checkbox" value="Languages" checked onchange="filterByCategory()"> Languages</label>
-        <label><input type="checkbox" value="Journals" checked onchange="filterByCategory()"> Journals</label>
-        <label><input type="checkbox" value="Biography" checked onchange="filterByCategory()"> Biography</label>
-        <label><input type="checkbox" value="Business" checked onchange="filterByCategory()"> Business</label>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo">
+            <i class="fas fa-book-open"></i>
+            <h1>BookShelf</h1>
+          </div>
+          <p class="tagline">Your Personal Digital Library</p>
+        </div>
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-count" id="totalBooks">0</span>
+            <span class="stat-label">Total Books</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-count" id="availableBooks">0</span>
+            <span class="stat-label">Available</span>
+          </div>
+        </div>
       </div>
-      <button class="reset-btn" onclick="resetToDefaults()">Reset to Defaults</button>
+    </header>
+
+    <div class="main-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3><i class="fas fa-filter"></i> Filters</h3>
+          <div class="filters-container">
+            <div class="filter-group">
+              <h4>Categories</h4>
+              <div class="category-filters" id="categoryFilters">
+                <!-- Categories will be populated dynamically -->
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <h4>Status</h4>
+              <div class="status-filters">
+                <label class="filter-chip active" data-status="all">
+                  <input type="radio" name="status" value="all" checked> All
+                </label>
+                <label class="filter-chip" data-status="Available">
+                  <input type="radio" name="status" value="Available"> Available
+                </label>
+                <label class="filter-chip" data-status="Issued">
+                  <input type="radio" name="status" value="Issued"> Issued
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <button class="reset-btn" onclick="resetFilters()">
+            <i class="fas fa-redo"></i> Reset Filters
+          </button>
+        </div>
+        
+        <div class="sidebar-section">
+          <h3><i class="fas fa-chart-bar"></i> Quick Stats</h3>
+          <div class="stats-summary" id="categoryStats">
+            <!-- Category stats will be populated here -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Actions Bar -->
+        <div class="actions-bar">
+          <div class="search-container">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" 
+                     id="searchBox" 
+                     placeholder="Search books, authors, or categories..."
+                     onkeyup="debounceSearch()"
+                     aria-label="Search books">
+              <button class="clear-search" onclick="clearSearch()" title="Clear search">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="search-hints">
+              <small>Try: "fiction" or "Stephen King" or "self-help"</small>
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn-primary" onclick="showAddBookModal()">
+              <i class="fas fa-plus"></i> Add New Book
+            </button>
+          </div>
+        </div>
+
+        <!-- Books Grid -->
+        <div class="books-container">
+          <div class="books-header">
+            <h2 id="booksTitle">All Books</h2>
+            <div class="view-controls">
+              <span class="results-count" id="resultsCount">0 books</span>
+              <div class="view-toggle">
+                <button class="view-btn active" data-view="grid" title="Grid view">
+                  <i class="fas fa-th"></i>
+                </button>
+                <button class="view-btn" data-view="list" title="List view">
+                  <i class="fas fa-list"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div id="bookList" class="books-grid">
+            <!-- Books will be dynamically loaded here -->
+          </div>
+          
+          <div id="emptyState" class="empty-state">
+            <i class="fas fa-book"></i>
+            <h3>No books found</h3>
+            <p>Try adjusting your filters or add a new book to get started.</p>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Add Book -->
-      <div class="card add-card">
-        <input type="text" id="title" placeholder="Book Title" aria-label="Book Title">
-        <input type="text" id="author" placeholder="Author Name" aria-label="Author Name">
-        <select id="category" aria-label="Category">
-          <option value="Self-Help">Self-Help</option>
-          <option value="Fiction">Fiction</option>
-          <option value="Science">Science</option>
-          <option value="Math">Math</option>
-          <option value="Languages">Languages</option>
-          <option value="Journals">Journals</option>
-          <option value="Biography">Biography</option>
-          <option value="Business">Business</option>
-        </select>
-        <button onclick="addBook()">➕ Add Book</button>
+    <!-- Add Book Modal -->
+    <div id="addBookModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-book-medical"></i> Add New Book</h3>
+          <button class="close-modal" onclick="closeAddBookModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="title">Book Title *</label>
+            <input type="text" id="title" placeholder="Enter book title">
+          </div>
+          <div class="form-group">
+            <label for="author">Author *</label>
+            <input type="text" id="author" placeholder="Enter author name">
+          </div>
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="Self-Help">Self-Help</option>
+              <option value="Fiction">Fiction</option>
+              <option value="Science">Science</option>
+              <option value="Math">Math</option>
+              <option value="Languages">Languages</option>
+              <option value="Journals">Journals</option>
+              <option value="Biography">Biography</option>
+              <option value="Business">Business</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Initial Status</label>
+            <div class="status-options">
+              <label class="status-option">
+                <input type="radio" name="status" value="Available" checked>
+                <span class="status-indicator available"></span>
+                Available
+              </label>
+              <label class="status-option">
+                <input type="radio" name="status" value="Issued">
+                <span class="status-indicator issued"></span>
+                Issued
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="closeAddBookModal()">Cancel</button>
+          <button class="btn-primary" onclick="addBook()">Add to Library</button>
+        </div>
       </div>
-
-      <!-- Search -->
-      <div class="card search-card">
-        <input type="text" id="searchBox" placeholder="🔍 Search book, author, or category..." onkeyup="searchBooks()" aria-label="Search">
-        <button onclick="clearSearch()">Clear Search</button>
-      </div>
-
-      <!-- Books Grid -->
-      <div id="bookList" class="grid"></div>
     </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>BookShelf Manager &copy; 2024 | <span id="currentYear"></span></p>
+      <p class="footer-note">Track, organize, and manage your personal library</p>
+    </footer>
   </div>
 
   <script src="script.js"></script>
